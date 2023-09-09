@@ -6,15 +6,20 @@ import pyautogui
 import pygetwindow
 import psutil
 from PIL import Image
+import ctypes
+from datetime import datetime
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(intents=intents, command_prefix = str(sys.argv[1]))
+bot.launch_time = datetime.utcnow()
 
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
+    global startdate
+    startdate = datetime.now()
 
 @bot.command()
 async def test(ctx):
@@ -121,5 +126,30 @@ async def close(ctx, *, title:str):
         await ctx.reply('Done!')
     except:
         await ctx.reply(":x: Error getting the window, it might not exist")
+
+@bot.command()
+async def systemuptime(ctx):
+    '''Shows the system uptime'''
+    lib = ctypes.windll.kernel32
+    t = lib.GetTickCount64()
+    t = int(str(t)[:-3])
+    mins, sec = divmod(t, 60)
+    hour, mins = divmod(mins, 60)
+    days, hour = divmod(hour, 24)
+    ctx.reply(f"System uptime: {days} days, {hour:02} hours, {mins:02} minutes and {sec:02} seconds.")
+
+@bot.command()
+async def botuptime(ctx):
+    '''Shows the bot uptime'''
+    delta_uptime = datetime.utcnow() - bot.launch_time
+    hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days, hours = divmod(hours, 24)
+    await ctx.send(f"{days}d, {hours}h, {minutes}m")
+
+@bot.command()
+async def bye(ctx):
+    '''Closes the bot'''
+    bot.close()
 
 bot.run(str(sys.argv[2]))
