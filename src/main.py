@@ -77,6 +77,7 @@ async def res(ctx):
 
 @bot.command()
 async def screenshotwindow(ctx, *, title:str):
+    '''Screenshots a window'''
     try:
         window = pygetwindow.getWindowsWithTitle(title)[0]
         left, top = window.topleft
@@ -91,6 +92,7 @@ async def screenshotwindow(ctx, *, title:str):
 
 @bot.command()
 async def minimize(ctx, *, title:str):
+    '''Minimize a window'''
     try:
         window = pygetwindow.getWindowsWithTitle(title)[0]
         window.restore()
@@ -101,6 +103,7 @@ async def minimize(ctx, *, title:str):
         
 @bot.command()
 async def maximize(ctx, *, title:str):
+    '''Maximize a window'''
     try:
         window = pygetwindow.getWindowsWithTitle(title)[0]
         window.restore()
@@ -111,6 +114,7 @@ async def maximize(ctx, *, title:str):
 
 @bot.command()
 async def close(ctx, *, title:str):
+    '''Closes a window'''
     try:
         window = pygetwindow.getWindowsWithTitle(title)[0]
         window.close()
