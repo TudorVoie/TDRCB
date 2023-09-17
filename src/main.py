@@ -151,5 +151,84 @@ async def botuptime(ctx):
 async def bye(ctx):
     '''Closes the bot'''
     bot.close()
+    
+@bot.command()
+async def forcedshutdown(ctx):
+    '''Force shutdowns the system'''
+    await ctx.reply('Shutting down...')
+    os.system('shutdown /s /t 1 /f')
+    
+@bot.command()
+async def forcedrestart(ctx):
+    '''Force restarts the system'''
+    await ctx.reply('Restarting...')
+    os.system('shutdown /r /t 1 /f')
+    
+@bot.command()
+async def shutdowntimer(ctx, time:int, format:str):
+    '''Set a timer for shutdown. Usage: [p]shutdowntimer value unit(s/m/h)'''
+    if format == "s":
+        os.system('shutdown /s /t '+time)
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    elif format == "m":
+        os.system('shutdown /s /t '+time*60)
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    elif format == "h":
+        os.system('shutdown /s /t '+time*3600)
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    else:
+        await ctx.reply('Error: Cannot schedule shutdown.')
+        
+@bot.command()
+async def restarttimer(ctx, time:int, format:str):
+    '''Set a timer for restart. Usage: [p]restarttimer value unit(s/m/h)'''
+    if format == "s":
+        os.system('shutdown /r /t '+time)
+        await ctx.reply('Restarting in ' + time + format + '...')
+    elif format == "m":
+        os.system('shutdown /r /t '+time*60)
+        await ctx.reply('Restarting in ' + time + format + '...')
+    elif format == "h":
+        os.system('shutdown /r /t '+time*3600)
+        await ctx.reply('Restarting in ' + time + format + '...')
+    else:
+        await ctx.reply('Error: Cannot schedule restart.')
+
+@bot.command()
+async def fshutdowntimer(ctx, time:int, format:str):
+    '''Set a timer for forced shutdown. Usage: [p]fshutdowntimer value unit(s/m/h)'''
+    if format == "s":
+        os.system('shutdown /s /t '+time+' /f')
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    elif format == "m":
+        os.system('shutdown /s /t '+time*60+' /f')
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    elif format == "h":
+        os.system('shutdown /s /t '+time*3600+' /f')
+        await ctx.reply('Shutting down in ' + time + format + '...')
+    else:
+        await ctx.reply('Error: Cannot schedule forced shutdown.')
+ 
+@bot.command()
+async def frestarttimer(ctx, time:int, format:str):
+    '''Set a timer for forced restart. Usage: [p]frestarttimer value unit(s/m/h)'''
+    if format == "s":
+        os.system('shutdown /r /t '+time+' /f')
+        await ctx.reply('Restarting in ' + time + format + '...')
+    elif format == "m":
+        os.system('shutdown /r /t '+time*60+' /f')
+        await ctx.reply('Restarting in ' + time + format + '...')
+    elif format == "h":
+        os.system('shutdown /r /t '+time*3600+' /f')
+        await ctx.reply('Restarting in ' + time + format + '...')
+    else:
+        await ctx.reply('Error: Cannot schedule forced restart.')
+
+@bot.command()
+async def aborttimer(ctx):
+    '''Abort the timed shutdown / restart'''
+    await ctx.reply('Aborting timed shutdown / restart')
+    os.system('shutdown /a')
+        
 
 bot.run(str(sys.argv[2]))
