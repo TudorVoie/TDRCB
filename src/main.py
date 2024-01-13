@@ -11,6 +11,7 @@ import psutil
 from PIL import Image
 import ctypes
 from datetime import datetime
+import subprocess
 
 intents = discord.Intents.all()
 
@@ -217,5 +218,29 @@ async def aborttimer(interaction: discord.Interaction):
     await interaction.response.send_message('Aborting timed shutdown / restart')
     os.system('shutdown /a')
         
+@bot.tree.command(name = 'cmd', description = 'Runs a cmd command')
+async def commandprompt(interaction: discord.Interaction, *, s: str):
+    p = subprocess.run(s, shell = True, capture_output = True, text = True)
+    if(len(p.stdout + p.stderr) > 1999):
+        await interaction.response.send_message('Result of command ```'+ s + '```')
+        st = p.stdout + '\n' + p.stderr
+        max_lenght = 1990
+        while len(st) > max_lenght:
+            line_lenght = st[:max_lenght].rfind(' ')
+            await bot.get_channel(interaction.channel_id).send(st[:line_lenght])
+            st = st[line_lenght + 1:]
+        await bot.get_channel(interaction.channel_id).send(st)
+    else:
+        await interaction.response.send_message('```' + p.stdout + '\n' + p.stderr + '```')
+
+@bot.tree.command(name = 'logoff', description = 'Loggs off Windows')
+async def logoff(interaction: discord.Interaction):
+    await interaction.response.send_message('Logging off...')
+    os.system('logoff')
+
+@bot.tree.command(name = 'msgbox', description = 'Shows a message box.')
+async def msgbox(interaction: discord.Interaction, *, msg:str):
+    subprocess.run(f'msg * {msg}', shell = True)
+    await interaction.response.send_message('Message box appeared.')
 
 bot.run(str(sys.argv[2]))
