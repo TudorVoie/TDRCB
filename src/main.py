@@ -13,6 +13,8 @@ import ctypes
 from datetime import datetime
 import subprocess
 
+version = "1.1"
+
 intents = discord.Intents.all()
 
 bot = commands.Bot(intents=intents, command_prefix = '.', help_command = None)
@@ -242,5 +244,11 @@ async def logoff(interaction: discord.Interaction):
 async def msgbox(interaction: discord.Interaction, *, msg:str):
     subprocess.run(f'msg * {msg}', shell = True)
     await interaction.response.send_message('Message box appeared.')
+
+@bot.tree.command(name = "about", description = "About")
+async def about(interaction: discord.Interaction):
+    await interaction.response.send_message('TDRCB version ' + version + '. GitHub repository at: https://github.com/TudorVoie/TDRCB')
+
+
 
 bot.run(str(sys.argv[2]))
