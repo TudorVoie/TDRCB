@@ -1,4 +1,4 @@
-#TDRCB v1.1
+#TDRCB v1.2
 
 import discord
 from discord.ext import commands
@@ -13,12 +13,14 @@ import ctypes
 from datetime import datetime
 import subprocess
 
-version = "1.1"
+version = "1.2" #edit this on new updates, will be displayed in the /about command
 
 intents = discord.Intents.all()
 
 bot = commands.Bot(intents=intents, command_prefix = '.', help_command = None)
 bot.launch_time = datetime.utcnow()
+
+f = open(os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token')
 
 @bot.event
 async def on_ready():
@@ -56,6 +58,9 @@ async def screenshot(interaction: discord.Interaction):
 
 @bot.tree.command(name = 'tasklist', description = 'Shows all the open windows')
 async def tasklist(interaction: discord.Interaction):
+    #gets all the existent window titles
+    #then uses discord's markdown to make a list using markdown's code block
+    #adds it to the message and then makes a new line
     wt = pygetwindow.getAllTitles()
     t = '``` \n'
     for x in wt:
@@ -138,6 +143,7 @@ async def systemuptime(interaction: discord.Interaction):
 
 @bot.tree.command(name = 'botuptime', description = "Shows the bot's uptime")
 async def botuptime(interaction: discord.Interaction):
+    #time is calculated as follow in epcoh seconds: now - time at startup
     delta_uptime = datetime.utcnow() - bot.launch_time
     hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -226,6 +232,7 @@ async def commandprompt(interaction: discord.Interaction, *, s: str):
     if(len(p.stdout + p.stderr) > 1999):
         await interaction.response.send_message('Result of command ```'+ s + '```')
         st = p.stdout + '\n' + p.stderr
+        #discord has a 2000 character limit per message, so we are splitting the content into ~2000 character chunks
         max_lenght = 1990
         while len(st) > max_lenght:
             line_lenght = st[:max_lenght].rfind(' ')
@@ -249,6 +256,4 @@ async def msgbox(interaction: discord.Interaction, *, msg:str):
 async def about(interaction: discord.Interaction):
     await interaction.response.send_message('TDRCB version ' + version + '. GitHub repository at: https://github.com/TudorVoie/TDRCB')
 
-
-
-bot.run(str(sys.argv[2]))
+bot.run(f.read())

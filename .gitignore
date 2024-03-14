@@ -153,3 +153,4 @@ cython_debug/
 *.config
 src/screenshot.png
 src/screenshotwindow.png
+*.exe
