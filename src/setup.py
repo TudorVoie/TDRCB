@@ -1,6 +1,7 @@
 import os
 import sys
 from tkinter import *
+from tkinter import messagebox
 import webbrowser
 import shutil
 
@@ -33,13 +34,37 @@ text = Label(root, text = 'After that, press the install button!', font = ('Aria
 text.pack()
 
 def setup():
-    pt = os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token'
-    f = open(pt ,'w')
-    f.write(box.get("1.0","end-1c"))
-    p = os.getenv('APPDATA') + r'\\Microsoft\Windows\Start Menu\Programs\Startup'
-    shutil.copy('tdrcb.exe', p)
+    try:
+        pt = os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token'
+        f = open(pt ,'w')
+        f.write(box.get("1.0","end-1c"))
+        p = os.getenv('APPDATA') + r'\\Microsoft\Windows\Start Menu\Programs\Startup'
+        shutil.copy('launcher.exe', p)
+        p = os.getenv('USERPROFILE')
+        shutil.copy('tdrcb.exe', p)
+        messagebox.showinfo(title = 'Information', message = 'Setup has completed successfully.')
+    except Exception as e:
+        messagebox.showerror(title = 'Information', message = 'An error occured. See error.txt for more information.')
+        errorfile = open('error.txt', 'w')
+        errorfile.write(e)
+        errorfile.close()
 
+def update():
+    try:
+        os.remove(os.getenv('USERPROFILE'))
+        p = os.getenv('USERPROFILE')
+        shutil.copy('tdrcb.exe', p)
+        messagebox.showinfo(title = "Information", message = "Updated successfully.")
+    except Exception as e:
+        messagebox.showerror(title = 'Information', message = 'An error occured. See error.txt for more information.')
+        errorfile = open('error.txt', 'w')
+        errorfile.write(e)
+        errorfile.close()
+        
 w = Button(root, text = 'Install!', command = setup)
+w.pack()
+
+w = Button(root, text = 'Update!', command = update)
 w.pack()
 
 w = Button(root, text = 'GitHub repository', command = github)
@@ -52,10 +77,30 @@ text = Label(root, text = 'Press the button above to get your bot token', font =
 text.pack()
 
 def uninst():
-    os.remove(os.getenv('APPDATA') + r'\\Microsoft\Windows\Start Menu\Programs\Startup\tdrcb.exe')
-    os.remove(os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token')
+    try:
+        os.remove(os.getenv('APPDATA') + r'\\Microsoft\Windows\Start Menu\Programs\Startup\launcher.exe')
+        os.remove(os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token')
+        messagebox.showinfo(title = "Information", message = "TDRCB has been uninstalled successfully.")
+    except Exception as e:
+        messagebox.showerror(title = 'Information', message = 'An error occured. See error.txt for more information.')
+        errorfile = open('error.txt', 'w')
+        errorfile.write(e)
+        errorfile.close()
+
+def uninstkeep():
+    try:
+        os.remove(os.getenv('APPDATA') + r'\\Microsoft\Windows\Start Menu\Programs\Startup\launcher.exe')
+        messagebox.showinfo(title = "Information", message = "TDRCB has been uninstalled successfully.")
+    except Exception as e:
+        messagebox.showerror(title = 'Information', message = 'An error occured. See error.txt for more information.')
+        errorfile = open('error.txt', 'w')
+        errorfile.write(e)
+        errorfile.close()
 
 w = Button(root, text = 'Uninstall!', command = uninst)
+w.pack()
+
+w = Button(root, text = 'Uninstall without deleting the token file.', command = uninstkeep)
 w.pack()
 
 text = Label(root, text = 'In case you want to uninstall...', font = ('Arial', 8))
