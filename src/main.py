@@ -1,4 +1,4 @@
-#TDRCB v1.1
+#TDRCB v1.2
 
 import discord
 from discord.ext import commands
@@ -12,13 +12,16 @@ from PIL import Image
 import ctypes
 from datetime import datetime
 import subprocess
+from tkinter import messagebox
 
-version = "1.1"
+version = "1.2" #edit this on new updates, will be displayed in the /about command
 
 intents = discord.Intents.all()
 
 bot = commands.Bot(intents=intents, command_prefix = '.', help_command = None)
 bot.launch_time = datetime.utcnow()
+
+f = open(os.getenv('USERPROFILE') + r'\TDRCB_DONOTDELETE.token')
 
 @bot.event
 async def on_ready():
@@ -53,9 +56,13 @@ async def restart(interaction: discord.Interaction):
 async def screenshot(interaction: discord.Interaction):
     im2 = pyautogui.screenshot('screenshot.png')
     await interaction.response.send_message(file=discord.File('screenshot.png'))
+    os.remove('screenshot.png')
 
 @bot.tree.command(name = 'tasklist', description = 'Shows all the open windows')
 async def tasklist(interaction: discord.Interaction):
+    #gets all the existent window titles
+    #then uses discord's markdown to make a list using markdown's code block
+    #adds it to the message and then makes a new line
     wt = pygetwindow.getAllTitles()
     t = '``` \n'
     for x in wt:
@@ -94,6 +101,7 @@ async def screenshotwindow(interaction: discord.Interaction, *, title:str):
         im = im.crop((left, top, right, bottom))
         im.save("screenshotwindow.png")
         await interaction.response.send_message(file=discord.File('screenshotwindow.png'))
+        os.remove('screenshotwindow.png')
     except:
         await interaction.response.send_message(":x: Error getting the window, it might not exist")
 
@@ -138,6 +146,7 @@ async def systemuptime(interaction: discord.Interaction):
 
 @bot.tree.command(name = 'botuptime', description = "Shows the bot's uptime")
 async def botuptime(interaction: discord.Interaction):
+    #time is calculated as follow in epcoh seconds: now - time at startup
     delta_uptime = datetime.utcnow() - bot.launch_time
     hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -162,13 +171,13 @@ async def forcedrestart(interaction: discord.Interaction):
 @bot.tree.command(name = 'shutdowntimer', description = 'Set a timer for shutdown. Usage: /shutdowntimer value unit(s/m/h)')
 async def shutdowntimer(interaction: discord.Interaction, time:int, format:str):
     if format == "s":
-        os.system('shutdown /s /t '+time)
+        os.system('shutdown /s /t '+str(time))
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     elif format == "m":
-        os.system('shutdown /s /t '+time*60)
+        os.system('shutdown /s /t '+str(time*60))
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     elif format == "h":
-        os.system('shutdown /s /t '+time*3600)
+        os.system('shutdown /s /t '+str(time*3600))
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     else:
         await interaction.response.send_message('Error: Cannot schedule shutdown.')
@@ -176,13 +185,13 @@ async def shutdowntimer(interaction: discord.Interaction, time:int, format:str):
 @bot.tree.command(name = 'restarttimer', description = 'Set a timer for restart. Usage: /restarttimer value unit(s/m/h)')
 async def restarttimer(interaction: discord.Interaction, time:int, format:str):
     if format == "s":
-        os.system('shutdown /r /t '+time)
+        os.system('shutdown /r /t '+str(time))
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     elif format == "m":
-        os.system('shutdown /r /t '+time*60)
+        os.system('shutdown /r /t '+str(time*60))
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     elif format == "h":
-        os.system('shutdown /r /t '+time*3600)
+        os.system('shutdown /r /t '+str(time*3600))
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     else:
         await interaction.response.send_message('Error: Cannot schedule restart.')
@@ -190,13 +199,13 @@ async def restarttimer(interaction: discord.Interaction, time:int, format:str):
 @bot.tree.command(name = 'fshutdowntimer', description = 'Sets a forced shutdown timer Usage: /fshutdowntimer value unit(s/m/h)')
 async def fshutdowntimer(interaction: discord.Interaction, time:int, format:str):
     if format == "s":
-        os.system('shutdown /s /t '+time+' /f')
+        os.system('shutdown /s /t '+str(time)+' /f')
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     elif format == "m":
-        os.system('shutdown /s /t '+time*60+' /f')
+        os.system('shutdown /s /t '+str(time*60)+' /f')
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     elif format == "h":
-        os.system('shutdown /s /t '+time*3600+' /f')
+        os.system('shutdown /s /t '+str(time*3600)+' /f')
         await interaction.response.send_message('Shutting down in ' + time + format + '...')
     else:
         await interaction.response.send_message('Error: Cannot schedule forced shutdown.')
@@ -204,13 +213,13 @@ async def fshutdowntimer(interaction: discord.Interaction, time:int, format:str)
 @bot.tree.command(name = 'frestarttimer', description = 'Sets a forced restart timer. Usage: /frestarttimer value unit(s/m/h)')
 async def frestarttimer(interaction: discord.Interaction, time:int, format:str):
     if format == "s":
-        os.system('shutdown /r /t '+time+' /f')
+        os.system('shutdown /r /t '+str(time)+' /f')
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     elif format == "m":
-        os.system('shutdown /r /t '+time*60+' /f')
+        os.system('shutdown /r /t '+str(time*60)+' /f')
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     elif format == "h":
-        os.system('shutdown /r /t '+time*3600+' /f')
+        os.system('shutdown /r /t '+str(time*3600)+' /f')
         await interaction.response.send_message('Restarting in ' + time + format + '...')
     else:
         await interaction.response.send_message('Error: Cannot schedule forced restart.')
@@ -226,6 +235,7 @@ async def commandprompt(interaction: discord.Interaction, *, s: str):
     if(len(p.stdout + p.stderr) > 1999):
         await interaction.response.send_message('Result of command ```'+ s + '```')
         st = p.stdout + '\n' + p.stderr
+        #discord has a 2000 character limit per message, so we are splitting the content into ~2000 character chunks
         max_lenght = 1990
         while len(st) > max_lenght:
             line_lenght = st[:max_lenght].rfind(' ')
@@ -242,13 +252,11 @@ async def logoff(interaction: discord.Interaction):
 
 @bot.tree.command(name = 'msgbox', description = 'Shows a message box.')
 async def msgbox(interaction: discord.Interaction, *, msg:str):
-    subprocess.run(f'msg * {msg}', shell = True)
+    messagebox.showinfo(title = 'TDRCB Message Box', messsage = msg)
     await interaction.response.send_message('Message box appeared.')
 
 @bot.tree.command(name = "about", description = "About")
 async def about(interaction: discord.Interaction):
     await interaction.response.send_message('TDRCB version ' + version + '. GitHub repository at: https://github.com/TudorVoie/TDRCB')
 
-
-
-bot.run(str(sys.argv[2]))
+bot.run(f.read())
