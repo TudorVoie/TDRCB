@@ -1,4 +1,4 @@
-#TDRCB v1.2
+#TDRCB v1.3
 
 import discord
 from discord.ext import commands
@@ -14,7 +14,7 @@ from datetime import datetime
 import subprocess
 from tkinter import messagebox
 
-version = "1.2" #edit this on new updates, will be displayed in the /about command
+version = "1.3" #edit this on new updates, will be displayed in the /about command
 
 intents = discord.Intents.all()
 
