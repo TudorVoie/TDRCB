@@ -1,31 +1,61 @@
-# TDRCB (Tudor’s Discord Remote Control Bot)
+# README
+### Librării străine folosite:
+psutil, pyautogui, pygetwindow, ctypes, discord.py, subprocess
+### Cod străin folosit:
+#### In main.py:
+Pentru facerea unei capturi de ecran a unei ferestre (a fost modificat puțin de mine):
+<code>
+window = pygetwindow.getWindowsWithTitle(title)[0]
+        left, top = window.topleft
+        right, bottom = window.bottomright
+        pyautogui.screenshot (os.getenv('USERPROFILE') + r'\screenshotwindow.png')
+        im = Image.open (os.getenv('USERPROFILE') + r'\screenshotwindow.png')
+        im = im.crop((left, top, right, bottom))
+</code>
 
-TDRCB este un program creat pentru a facilita controlul de la distanță a calculatorului personal. Programul se folosește de o aplicație deja utilizată de mulți dintre noi, Discord.
+Pentru a lua timpul de funcționare al sistemului:
+<code>
+lib = ctypes.windll.kernel32
+    t = lib.GetTickCount64()
+    t = int(str(t)[:-3])
+    mins, sec = divmod(t, 60)
+    hour, mins = divmod(mins, 60)
+    days, hour = divmod(hour, 24)
+</code>
 
-Programul, în sine, este un bot de Discord, adică un utilizator automat, programat să execute comenzi la trimiterea unor mesaje specifice. Acesta rulează în fundalul sistemului de operare Windows și se pornește simultan cu acesta. Pentru a rula programul în fundal, nu sunt necesare specificații foarte avansate. Avem nevoie doar de Windows 10, 1GB de RAM și 200MB de spațiu liber.
+Pentru a calcula timpul trecut de la pornirea bot-ului:
+<code>
+delta_uptime = datetime.utcnow() - bot.launch_time
+    hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    days, hours = divmod(hours, 24)
+    await interaction.response.send_message(f"{days}d, {hours}h, {minutes}m")
+</code>,
+<code>
+global startdate
+startdate = datetime.now()
+</code> și
+<code>
+bot.launch_time = datetime.utcnow()
+</code>
 
-L-am creat inițial pentru a afla care era progresul unei descărcări atunci când îmi lăsam calculatorul pornit și plecam de acasă. Acum programul a primit mai multe funcții pe lângă ce i-am propus inițial. Puteam folosi un program precum TeamViewer, dar printr-un program scris de mine puteam ajunge la rezultatul dorit de la un asemenea soft.
+Pentru a colecta statistici despre utilizarea sistemului:
+<code>
+kb = float(1024)
+mb = float(kb ** 2)
+gb = float(kb ** 3)
+memTotal = int(psutil.virtual_memory()[0]/gb)
+memFree = int(psutil.virtual_memory()[1]/gb)
+memUsed = int(psutil.virtual_memory()[3]/gb)
+memPercent = int(memUsed/memTotal*100)
+cp = psutil.cpu_percent()
+</code>
 
-## Funcționalități ale programului:
-
-* Închidere și repornire a calculatorului;
-* Trimitere a capturilor de ecran sau a ferestrelor individuale;
-* Închidere, minimizare și maximizare a aplicațiilor din fundal;
-* Executare a comenzilor MS-DOS;
-* Interfață ușor de utilizat;
-* Sistem ușor de instalare și actualizare a programului.
-
-## Tehnologii / librării folosite:
-* Discord.py - o librărie ce permite conectarea la un utilizator automat în Discord. Odată conectat, cu ajutorul unui cod (token) primit, utilizatorul automat va lua viață.
-* PyAutoGUI, PyGetWindow - două librării ce permit capturarea imaginilor de pe ecran și operarea ferestrelor (minimizare, maximizare etc.) 
-* psutil - ajută la luarea a diferite statistici ale sistemului de operare (memorie RAM utilizată, utilizarea procesorului etc.)
-
-## Scurt ghid de instalare:
-Se descarcă zip-ul de aici, se extrage și se va rula setup.exe. În fereastra ce a apărut, se introduce token-ul primit din pagina de unde s-a creat botul. În final, se apasă pe butonul „Install!” (pentru a actualiza aplicația, doar apăsați pe butonul „Update!” fără a mai introduce un token). 
-Un mesaj va apărea care va indica că instalarea s-a terminat. Programul va porni după următorul restart al sistemului. Fișierul care memorează token-ul și softul sunt copiate în folderul utilizatorului. Un alt program care va lansa programul în sine, va fi copiat în folderul de Startup. În Task Manager, programul va apărea ca și launcher.exe.
-Launcher.exe este un executabil care va lansa programul în sine. Acest lucru a fost făcut pentru a nu scrie date temporare în folderul protejat (Startup).
-
-## Gânduri de viitor:
-Doresc să implementez mai multe limbi in program, posibilitatea de a putea apăsa taste prin intermediul bot-ului și de a primi notificări la finalul unei descărcări.
-
-	
+Pentru a împărți un mesaj prea lungi în mai multe mesaje de lungimi potrivite:
+<code>
+max_lenght = 1990
+while len(st) > max_lenght:
+	line_lenght = st[:max_lenght].rfind(' ')
+        await bot.get_channel(interaction.channel_id).send(st[:line_lenght])
+        st = st[line_lenght + 1:]
+</code>
