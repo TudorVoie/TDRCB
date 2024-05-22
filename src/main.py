@@ -14,9 +14,9 @@ from datetime import datetime
 import subprocess
 from tkinter import messagebox
 
-version = "1.3" #edit this on new updates, will be displayed in the /about command
+version = "1.3.1" #edit this on new updates, will be displayed in the /about command
 
-intents = discord.Intents.all()
+intents = discord.Intents.none()
 
 bot = commands.Bot(intents=intents, command_prefix = '.', help_command = None)
 bot.launch_time = datetime.utcnow()
@@ -40,7 +40,7 @@ async def test(interaction: discord.Interaction):
     
 @bot.tree.command(name = 'latency', description = 'Shows the latency')
 async def latency(interaction: discord.Interaction):
-    await interaction.response.send_message('Latency is: ' + str(bot.latency))
+    await interaction.response.send_message('Latency is: ' + str(bot.latency) + 's')
 
 @bot.tree.command(name = 'shutdown', description = 'Peacefully shutsdown the system')
 async def shutdown(interaction: discord.Interaction):
@@ -142,7 +142,7 @@ async def systemuptime(interaction: discord.Interaction):
     mins, sec = divmod(t, 60)
     hour, mins = divmod(mins, 60)
     days, hour = divmod(hour, 24)
-    interaction.response.send_message(f"System uptime: {days} days, {hour:02} hours, {mins:02} minutes and {sec:02} seconds.")
+    await interaction.response.send_message(f"System uptime: {days} days, {hour:02} hours and {mins:02} minutes")
 
 @bot.tree.command(name = 'botuptime', description = "Shows the bot's uptime")
 async def botuptime(interaction: discord.Interaction):
@@ -151,7 +151,7 @@ async def botuptime(interaction: discord.Interaction):
     hours, remainder = divmod(int(delta_uptime.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
     days, hours = divmod(hours, 24)
-    await interaction.response.send_message(f"{days}d, {hours}h, {minutes}m")
+    await interaction.response.send_message(f"{days} days {hours} hours and {minutes} minutes")
 
 @bot.tree.command(name = 'bye', description = 'Stops the bot')
 async def bye(interaction: discord.Interaction):
