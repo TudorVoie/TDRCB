@@ -1,6 +1,6 @@
 # README
 ### Librării străine folosite:
-psutil, pyautogui, pygetwindow, ctypes, discord.py, subprocess, webbrowser, shutil
+psutil, pyautogui, pygetwindow, discord.py
 ### Cod străin folosit:
 #### In main.py:
 Pentru facerea unei capturi de ecran a unei ferestre (a fost modificat puțin de mine):
