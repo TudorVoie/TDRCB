@@ -1,4 +1,6 @@
 # README
+# TDRCB
+
 ### Librării străine folosite:
 psutil, pyautogui, pygetwindow, discord.py, Pillow, pyinstaller
 ### Cod străin folosit:
@@ -12,6 +14,7 @@ window = pygetwindow.getWindowsWithTitle(title)[0]
         im = Image.open (os.getenv('USERPROFILE') + r'\screenshotwindow.png')
         im = im.crop((left, top, right, bottom))
 </code>
+sursa: https://www.youtube.com/watch?v=OlEEv7lLbW0
 
 Pentru a lua timpul de funcționare al sistemului:
 <code>
@@ -22,6 +25,7 @@ lib = ctypes.windll.kernel32
     hour, mins = divmod(mins, 60)
     days, hour = divmod(hour, 24)
 </code>
+sursa: https://www.geeksforgeeks.org/getting-the-time-since-os-startup-using-python/
 
 Pentru a calcula timpul trecut de la pornirea bot-ului:
 <code>
@@ -38,6 +42,7 @@ startdate = datetime.now()
 <code>
 bot.launch_time = datetime.utcnow()
 </code>
+sursa: https://stackoverflow.com/a/63749960
 
 Pentru a colecta statistici despre utilizarea sistemului:
 <code>
@@ -50,8 +55,9 @@ memUsed = int(psutil.virtual_memory()[3]/gb)
 memPercent = int(memUsed/memTotal*100)
 cp = psutil.cpu_percent()
 </code>
+sursa: https://www.geeksforgeeks.org/how-to-get-current-cpu-and-ram-usage-in-python/
 
-Pentru a împărți un mesaj prea lungi în mai multe mesaje de lungimi potrivite:
+Pentru a împărți un mesaj prea lungi în mai multe mesaje de lungimi potrivite (cod modificat putin):
 <code>
 max_lenght = 1990
 while len(st) > max_lenght:
@@ -59,3 +65,4 @@ while len(st) > max_lenght:
         await bot.get_channel(interaction.channel_id).send(st[:line_lenght])
         st = st[line_lenght + 1:]
 </code>
+sursa: https://stackoverflow.com/a/57023374
