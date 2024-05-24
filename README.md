@@ -1,5 +1,7 @@
-# README
-# TDRCB
+# README TDRCB
+https://github.com/TudorVoie/TDRCB
+
+Folderul src conține tot codul. De îndată ce librăriile necesare sunt instalate, se va folosi pyinstaller cu parametrii --onefile și --noconsole pe fiecare fișier .py. Executabila main.exe va trebui redenumită în tdrcb.exe
 
 ### Librării străine folosite:
 psutil, pyautogui, pygetwindow, discord.py, Pillow, pyinstaller
